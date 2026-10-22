@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block title %}{% if action == 'edit' %}Edit Produce: {{ product.title }}{% else %}Add Fresh Produce{% endif %} | FarmDirect{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 740px; margin: 3rem auto 5rem;">
+  <div style="margin-bottom: 1.5rem; font-size: 0.88rem; color: var(--text-muted);">
+    <a href="{{ url_for('farmer_dashboard') }}" style="color: var(--text-muted);"><i class="fa-solid fa-arrow-left"></i> Back to Farmer Dashboard</a>
+  </div>
+
+  <div style="background: #ffffff; border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 2.5rem; box-shadow: var(--shadow-md);">
+    <div style="border-bottom: 1px solid var(--border-color); padding-bottom: 1.25rem; margin-bottom: 2rem;">
+      <span class="role-badge farmer" style="margin-bottom: 0.5rem; display: inline-block;">
+        <i class="fa-solid fa-tractor"></i> Direct Grower Portal
+      </span>
+      <h1 style="font-size: 1.85rem; font-weight: 800; color: var(--primary-dark); margin: 0;">
+        {% if action == 'edit' %}Edit Produce Listing{% else %}List New Fresh Harvest{% endif %}
+      </h1>
+      <p style="color: var(--text-muted); font-size: 0.95rem; margin: 0.35rem 0 0;">
+        Provide clear information and fair pricing for direct consumer purchase.
+      </p>
+    </div>
+
+    <form method="POST">
+      <!-- Title -->
+      <div class="form-group">
+        <label class="form-label" for="title">Produce Title *</label>
+        <input type="text" id="title" name="title" class="form-control" value="{{ product.title if product else '' }}" placeholder="e.g. Naturally Grown Red Vine Tomatoes" required>
+      </div>
+
+      <!-- Category & Unit -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem;">
+        <div class="form-group">
+          <label class="form-label" for="category">Category *</label>
+          <select id="category" name="category" class="form-control" required>
+            <option value="Vegetables" {% if product and product.category == 'Vegetables' %}selected{% endif %}>Vegetables</option>
+            <option value="Fruits" {% if product and product.category == 'Fruits' %}selected{% endif %}>Fruits</option>
+            <option value="Grains" {% if product and product.category == 'Grains' %}selected{% endif %}>Grains & Flours</option>
+            <option value="Dairy & Honey" {% if product and product.category == 'Dairy & Honey' %}selected{% endif %}>Dairy & Honey</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="unit">Unit of Measure *</label>
+          <input type="text" id="unit" name="unit" class="form-control" value="{{ product.unit if product else '1 kg' }}" placeholder="e.g. 1 kg, 500g bunch, 2 kg bag" required>
+        </div>
+      </div>
+
+      <!-- Price & Stock -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem;">
+        <div class="form-group">
+          <label class="form-label" for="price">Direct Price (₹) *</label>
+          <input type="number" id="price" name="price" class="form-control" value="{{ product.price if product else '' }}" step="0.5" min="1" placeholder="e.g. 45" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="stock">Available Stock Units *</label>
+          <input type="number" id="stock" name="stock" class="form-control" value="{{ product.stock if product else '50' }}" min="0" required>
+        </div>
+      </div>
+
+      <!-- Harvest Date & Freshness -->
+      <div class="form-group">
+        <label class="form-label" for="harvest_date">Harvest Timing / Freshness Tag</label>
+        <input type="text" id="harvest_date" name="harvest_date" class="form-control" value="{{ product.harvest_date if product else 'Harvested Today at Dawn' }}" placeholder="e.g. Harvested Today, Picked 2 Days Ago, Freshly Milled">
+      </div>
+
+      <!-- Image URL & Preset Picker -->
+      <div class="form-group">
+        <label class="form-label" for="image">Produce Image URL</label>
+        <input type="url" id="image" name="image" class="form-control" value="{{ product.image if product else '' }}" placeholder="https://images.unsplash.com/...">
+        
+        <!-- Quick Preset Image Buttons -->
+        <div style="margin-top: 0.6rem;">
+          <span style="font-size: 0.78rem; color: var(--text-muted); font-weight: 600;">Or Quick Select Preset Image:</span>
+          <div style="display: flex; gap: 0.4rem; flex-wrap: wrap; margin-top: 0.35rem;">
+            <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('image').value='https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=600&auto=format&fit=crop&q=80'">Tomatoes</button>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('image').value='https://images.unsplash.com/photo-1576045057995-568f588f82fb?w=600&auto=format&fit=crop&q=80'">Spinach</button>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('image').value='https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=600&auto=format&fit=crop&q=80'">Apples</button>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('image').value='https://images.unsplash.com/photo-1586201375761-83865001e31c?w=600&auto=format&fit=crop&q=80'">Rice/Grains</button>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('image').value='https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=600&auto=format&fit=crop&q=80'">Honey</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Description -->
+      <div class="form-group">
+        <label class="form-label" for="description">Cultivation Story & Description</label>
+        <textarea id="description" name="description" class="form-control" rows="4" placeholder="Describe soil methods, zero pesticide use, taste, and freshness guarantees...">{{ product.description if product else '' }}</textarea>
+      </div>
+
+      <!-- Organic Checkbox -->
+      <div class="form-group" style="margin-bottom: 2rem;">
+        <label style="display: flex; align-items: center; gap: 0.6rem; cursor: pointer;">
+          <input type="checkbox" name="organic" value="1" {% if product and product.organic %}checked{% elif not product %}checked{% endif %} style="width: 18px; height: 18px; accent-color: var(--primary);">
+          <span style="font-weight: 700; color: var(--primary-dark); font-size: 0.95rem;">
+            <i class="fa-solid fa-leaf" style="color: #16a34a;"></i> Certified 100% Organic / Pesticide-Free
+          </span>
+        </label>
+      </div>
+
+      <!-- Action Buttons -->
+      <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+        <a href="{{ url_for('farmer_dashboard') }}" class="btn btn-secondary">
+          Cancel
+        </a>
+        <button type="submit" class="btn btn-primary btn-lg">
+          <i class="fa-solid fa-cloud-arrow-up"></i>
+          {% if action == 'edit' %}Save Changes{% else %}Publish Produce Listing{% endif %}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

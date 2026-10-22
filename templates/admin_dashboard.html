@@ -1,0 +1,290 @@
+{% extends "base.html" %}
+
+{% block title %}Administrator Dashboard | FarmDirect{% endblock %}
+
+{% block content %}
+<div class="container" style="margin-top: 2.5rem; margin-bottom: 4.5rem;">
+  <!-- Admin Header -->
+  <div style="background: linear-gradient(135deg, #1e293b, #0f172a); border-radius: var(--radius-lg); padding: 2.5rem; color: #ffffff; margin-bottom: 2.5rem; box-shadow: var(--shadow-md); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.5rem;">
+    <div>
+      <span class="role-badge admin" style="background: rgba(255,255,255,0.15); color: #fde68a; margin-bottom: 0.5rem; display: inline-block;">
+        <i class="fa-solid fa-shield-halved"></i> Platform Master Administration
+      </span>
+      <h1 style="font-size: 2.2rem; font-weight: 800; margin: 0;">
+        FarmDirect Platform Control Hub
+      </h1>
+      <p style="color: #94a3b8; font-size: 1rem; margin-top: 0.35rem;">
+        Monitor farmer onboarding, review orders, verify compliance, and analyze system transactions.
+      </p>
+    </div>
+
+    <div style="display: flex; gap: 0.75rem;">
+      <a href="{{ url_for('marketplace') }}" class="btn btn-primary btn-sm" style="background: var(--primary);">
+        <i class="fa-solid fa-eye"></i> View Live Marketplace
+      </a>
+    </div>
+  </div>
+
+  <!-- KPI Metrics Grid -->
+  <div class="dashboard-stats-grid">
+    <div class="dash-stat-card">
+      <div class="dash-stat-icon" style="background: #dcfce7; color: #15803d;">
+        <i class="fa-solid fa-indian-rupee-sign"></i>
+      </div>
+      <div>
+        <div class="dash-stat-val">₹{{ stats.total_sales }}</div>
+        <div class="dash-stat-title">Total Platform GMV</div>
+      </div>
+    </div>
+
+    <div class="dash-stat-card">
+      <div class="dash-stat-icon" style="background: #e0f2fe; color: #0284c7;">
+        <i class="fa-solid fa-cart-shopping"></i>
+      </div>
+      <div>
+        <div class="dash-stat-val">{{ stats.total_orders }}</div>
+        <div class="dash-stat-title">Total Orders Fulfilled</div>
+      </div>
+    </div>
+
+    <div class="dash-stat-card">
+      <div class="dash-stat-icon">
+        <i class="fa-solid fa-tractor"></i>
+      </div>
+      <div>
+        <div class="dash-stat-val">{{ stats.farmers_count }}</div>
+        <div class="dash-stat-title">Registered Farmers</div>
+      </div>
+    </div>
+
+    <div class="dash-stat-card">
+      <div class="dash-stat-icon" style="background: #fef3c7; color: #d97706;">
+        <i class="fa-solid fa-user-clock"></i>
+      </div>
+      <div>
+        <div class="dash-stat-val">{{ stats.pending_farmers_count }}</div>
+        <div class="dash-stat-title">Pending Farmer Approvals</div>
+      </div>
+    </div>
+
+    <div class="dash-stat-card">
+      <div class="dash-stat-icon" style="background: #f3e8ff; color: #7e22ce;">
+        <i class="fa-solid fa-users"></i>
+      </div>
+      <div>
+        <div class="dash-stat-val">{{ stats.customers_count }}</div>
+        <div class="dash-stat-title">Consumer Accounts</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 1: Farmer Verification & Management (Feature 9) -->
+  <div class="table-card">
+    <div class="table-header-flex">
+      <div>
+        <h2 style="font-size: 1.35rem; font-weight: 800; color: var(--primary-dark); margin: 0;">
+          Farmer Verification & Account Status
+        </h2>
+        <p style="color: var(--text-muted); font-size: 0.88rem; margin: 0.2rem 0 0;">
+          Review newly registered growers and toggle verification permissions.
+        </p>
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      <table class="custom-table">
+        <thead>
+          <tr>
+            <th>Farmer & Farm Name</th>
+            <th>Location</th>
+            <th>Farming Type</th>
+            <th>Contact Phone</th>
+            <th>Verification Status</th>
+            <th style="text-align: right;">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for farmer in farmers %}
+            <tr>
+              <td>
+                <div style="font-weight: 700; color: var(--text-main);">{{ farmer.name }}</div>
+                <div style="font-size: 0.8rem; color: var(--primary); font-weight: 600;">{{ farmer.farm_name }}</div>
+                <div style="font-size: 0.75rem; color: var(--text-muted);">{{ farmer.email }}</div>
+              </td>
+              <td style="font-size: 0.88rem;">{{ farmer.location }}</td>
+              <td style="font-size: 0.88rem;">
+                <span class="role-badge farmer">{{ farmer.farming_type or 'Organic' }}</span>
+              </td>
+              <td style="font-size: 0.88rem; font-family: monospace;">{{ farmer.phone }}</td>
+              <td>
+                {% if farmer.status == 'approved' %}
+                  <span class="status-pill approved"><i class="fa-solid fa-check"></i> Approved & Active</span>
+                {% else %}
+                  <span class="status-pill pending"><i class="fa-solid fa-clock"></i> Pending Review</span>
+                {% endif %}
+              </td>
+              <td style="text-align: right;">
+                <form action="{{ url_for('admin_toggle_farmer') }}" method="POST" style="display: inline;">
+                  <input type="hidden" name="farmer_id" value="{{ farmer.id }}">
+                  {% if farmer.status == 'approved' %}
+                    <input type="hidden" name="status" value="pending">
+                    <button type="submit" class="btn btn-secondary btn-sm" title="Revoke Approval">
+                      Suspend
+                    </button>
+                  {% else %}
+                    <input type="hidden" name="status" value="approved">
+                    <button type="submit" class="btn btn-primary btn-sm" title="Approve Farmer">
+                      <i class="fa-solid fa-check"></i> Approve Grower
+                    </button>
+                  {% endif %}
+                </form>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Section 2: All Orders Master Log -->
+  <div class="table-card">
+    <div class="table-header-flex">
+      <div>
+        <h2 style="font-size: 1.35rem; font-weight: 800; color: var(--primary-dark); margin: 0;">
+          Platform Orders & Fulfillment Overview
+        </h2>
+        <p style="color: var(--text-muted); font-size: 0.88rem; margin: 0.2rem 0 0;">
+          Real-time transactions across all customers and regional farm hubs.
+        </p>
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      <table class="custom-table">
+        <thead>
+          <tr>
+            <th>Order ID</th>
+            <th>Customer</th>
+            <th>Items Count</th>
+            <th>Total (₹)</th>
+            <th>Payment</th>
+            <th>Status</th>
+            <th style="text-align: right;">Inspect</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for order in orders %}
+            <tr>
+              <td>
+                <strong style="color: var(--primary-dark); font-family: monospace;">{{ order.id }}</strong>
+                <div style="font-size: 0.75rem; color: var(--text-muted);">{{ order.created_at }}</div>
+              </td>
+              <td>
+                <div style="font-weight: 700;">{{ order.customer_name }}</div>
+                <div style="font-size: 0.78rem; color: var(--text-muted);">{{ order.customer_email }}</div>
+              </td>
+              <td>
+                {{ order['items']|length }} harvest item(s)
+              </td>
+              <td>
+                <strong style="color: var(--primary-dark); font-size: 1.05rem;">₹{{ order.total_amount }}</strong>
+              </td>
+              <td>
+                <span style="font-size: 0.82rem; font-weight: 600;">{{ order.payment_method }}</span>
+                <span class="status-pill {% if order.payment_status == 'Paid' %}approved{% else %}pending{% endif %}" style="display: block; width: fit-content; margin-top: 0.2rem;">
+                  {{ order.payment_status }}
+                </span>
+              </td>
+              <td>
+                <span class="status-pill {% if order.order_status == 'Delivered' %}approved{% elif order.order_status == 'Out for Delivery' %}shipping{% elif order.order_status in ['Farmer Confirmed', 'Harvested & Packed'] %}confirmed{% else %}pending{% endif %}">
+                  {{ order.order_status }}
+                </span>
+              </td>
+              <td style="text-align: right;">
+                <a href="{{ url_for('track_order', order_id=order.id) }}" class="btn btn-secondary btn-sm">
+                  View Tracker
+                </a>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Section 3: Messages & Contact Inquiries -->
+  <div class="table-card">
+    <div class="table-header-flex">
+      <div>
+        <h2 style="font-size: 1.35rem; font-weight: 800; color: var(--primary-dark); margin: 0;">
+          Customer & Farmer Inquiries
+        </h2>
+        <p style="color: var(--text-muted); font-size: 0.88rem; margin: 0.2rem 0 0;">
+          Submissions received from the contact and partnership form.
+        </p>
+      </div>
+      <span class="status-pill placed">{{ stats.unread_messages }} unread</span>
+    </div>
+
+    {% if messages %}
+      <div class="table-responsive">
+        <table class="custom-table">
+          <thead>
+            <tr>
+              <th>Sender</th>
+              <th>Inquiry Type</th>
+              <th>Subject & Message</th>
+              <th>Date</th>
+              <th>Status</th>
+              <th style="text-align: right;">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for msg in messages %}
+              <tr>
+                <td>
+                  <div style="font-weight: 700;">{{ msg.name }}</div>
+                  <div style="font-size: 0.78rem; color: var(--text-muted);">{{ msg.email }}</div>
+                </td>
+                <td>
+                  <span class="role-badge {% if msg.role_inquiry == 'Farmer' %}farmer{% else %}customer{% endif %}">
+                    {{ msg.role_inquiry }}
+                  </span>
+                </td>
+                <td style="max-width: 380px;">
+                  <strong style="color: var(--primary-dark); display: block; margin-bottom: 0.2rem;">{{ msg.subject }}</strong>
+                  <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0; line-height: 1.4;">
+                    {{ msg.message }}
+                  </p>
+                </td>
+                <td style="font-size: 0.8rem; color: var(--text-muted);">{{ msg.created_at }}</td>
+                <td>
+                  {% if msg.status == 'read' %}
+                    <span class="status-pill approved">Resolved</span>
+                  {% else %}
+                    <span class="status-pill pending">New</span>
+                  {% endif %}
+                </td>
+                <td style="text-align: right;">
+                  {% if msg.status != 'read' %}
+                    <form action="{{ url_for('admin_mark_message') }}" method="POST">
+                      <input type="hidden" name="msg_id" value="{{ msg.id }}">
+                      <button type="submit" class="btn btn-secondary btn-sm" title="Mark as Read">
+                        <i class="fa-solid fa-check"></i> Mark Read
+                      </button>
+                    </form>
+                  {% else %}
+                    <span style="font-size: 0.8rem; color: var(--text-light);"><i class="fa-solid fa-check-double"></i> Done</span>
+                  {% endif %}
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <p style="text-align: center; color: var(--text-muted); padding: 2rem 0;">No messages received yet.</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

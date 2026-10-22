@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+
+{% block title %}Tracking Order #{{ order.id }} | FarmDirect{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 900px; margin: 2.5rem auto 4.5rem;">
+  <!-- Breadcrumb -->
+  <div style="margin-bottom: 1.5rem; font-size: 0.88rem; color: var(--text-muted);">
+    <a href="{{ url_for('orders') }}" style="color: var(--text-muted);"><i class="fa-solid fa-arrow-left"></i> Back to Orders</a> / 
+    <span style="color: var(--primary); font-weight: 600;">Track {{ order.id }}</span>
+  </div>
+
+  <!-- Header Card -->
+  <div style="background: #ffffff; border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 2rem; box-shadow: var(--shadow-sm); margin-bottom: 2rem;">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1.25rem;">
+      <div>
+        <span class="role-badge farmer" style="margin-bottom: 0.4rem; display: inline-block;">
+          <i class="fa-solid fa-seedling"></i> Farm-Direct Harvest Pipeline
+        </span>
+        <h1 style="font-size: 1.85rem; font-weight: 800; color: var(--primary-dark); margin: 0;">
+          Tracking: {{ order.id }}
+        </h1>
+        <div style="font-size: 0.88rem; color: var(--text-muted); margin-top: 0.25rem;">
+          Placed on {{ order.created_at }} &bull; Customer: <strong>{{ order.customer_name }}</strong>
+        </div>
+      </div>
+
+      <div style="text-align: right;">
+        <span class="status-pill {% if order.order_status == 'Delivered' %}approved{% elif order.order_status == 'Out for Delivery' %}shipping{% elif order.order_status in ['Farmer Confirmed', 'Harvested & Packed'] %}confirmed{% else %}pending{% endif %}" style="font-size: 0.95rem; padding: 0.45rem 1rem;">
+          Current: {{ order.order_status }}
+        </span>
+      </div>
+    </div>
+
+    <!-- Visual Tracking Stepper -->
+    <div class="tracking-stepper">
+      {% for step in status_steps %}
+        {% set step_index = loop.index0 %}
+        <div class="tracking-step {% if step_index < current_idx %}completed{% elif step_index == current_idx %}current{% endif %}">
+          <div class="step-circle">
+            {% if step_index < current_idx %}
+              <i class="fa-solid fa-check"></i>
+            {% elif step_index == current_idx %}
+              {% if step.key == 'Placed' %}
+                <i class="fa-solid fa-receipt"></i>
+              {% elif step.key == 'Farmer Confirmed' %}
+                <i class="fa-solid fa-handshake"></i>
+              {% elif step.key == 'Harvested & Packed' %}
+                <i class="fa-solid fa-box-open"></i>
+              {% elif step.key == 'Out for Delivery' %}
+                <i class="fa-solid fa-truck"></i>
+              {% else %}
+                <i class="fa-solid fa-house-chimney"></i>
+              {% endif %}
+            {% else %}
+              {{ loop.index }}
+            {% endif %}
+          </div>
+          <div class="step-title">{{ step.label }}</div>
+          <div class="step-desc">{{ step.desc }}</div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <!-- Estimated Delivery Notice -->
+    <div style="background: var(--primary-ghost); border: 1px solid var(--border-green); border-radius: var(--radius-md); padding: 1.25rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+      <div style="display: flex; align-items: center; gap: 0.75rem;">
+        <div style="width: 40px; height: 40px; border-radius: 50%; background: var(--primary-subtle); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1.25rem;">
+          <i class="fa-solid fa-clock"></i>
+        </div>
+        <div>
+          <strong style="color: var(--primary-dark); font-size: 0.95rem;">Delivery Status Update</strong>
+          <p style="margin: 0; font-size: 0.85rem; color: var(--text-muted);">
+            Direct cold-chain courier routes avoid warehouse storage to guarantee freshness.
+          </p>
+        </div>
+      </div>
+      <div>
+        <a href="{{ url_for('contact') }}" class="btn btn-secondary btn-sm">
+          <i class="fa-solid fa-headset"></i> Contact Support
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Timeline Log & Item Summary Grid -->
+  <div style="display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 2rem;">
+    <!-- Timeline Log -->
+    <div style="background: #ffffff; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.75rem; box-shadow: var(--shadow-sm);">
+      <h3 style="font-size: 1.2rem; font-weight: 800; color: var(--primary-dark); margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.5rem;">
+        <i class="fa-solid fa-timeline" style="color: var(--primary);"></i> Fulfillment Activity Log
+      </h3>
+
+      <div style="display: flex; flex-direction: column; gap: 1.25rem; position: relative; padding-left: 1rem; border-left: 2px solid var(--primary-subtle); margin-left: 0.5rem;">
+        {% for event in order.timeline %}
+          <div style="position: relative;">
+            <div style="position: absolute; left: -23px; top: 2px; width: 14px; height: 14px; border-radius: 50%; background: var(--primary); border: 2px solid #ffffff;"></div>
+            <div style="display: flex; justify-content: space-between; align-items: baseline;">
+              <strong style="font-size: 0.95rem; color: var(--primary-dark);">{{ event.status }}</strong>
+              <span style="font-size: 0.78rem; color: var(--text-muted);">{{ event.time }}</span>
+            </div>
+            <p style="font-size: 0.88rem; color: var(--text-muted); margin: 0.25rem 0 0; line-height: 1.4;">
+              {{ event.description }}
+            </p>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Items & Delivery Details -->
+    <div>
+      <div style="background: #ffffff; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.75rem; box-shadow: var(--shadow-sm); margin-bottom: 1.5rem;">
+        <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--primary-dark); margin-bottom: 1rem;">
+          Delivery Destination
+        </h3>
+        <p style="font-size: 0.92rem; color: var(--text-main); margin-bottom: 0.5rem;">
+          <i class="fa-solid fa-location-dot" style="color: var(--primary); margin-right: 0.35rem;"></i>
+          {{ order.delivery_address }}
+        </p>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0;">
+          <i class="fa-solid fa-phone" style="color: var(--primary); margin-right: 0.35rem;"></i>
+          {{ order.customer_phone }}
+        </p>
+      </div>
+
+      <div style="background: #ffffff; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.75rem; box-shadow: var(--shadow-sm);">
+        <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--primary-dark); margin-bottom: 1rem;">
+          Produce Breakdown
+        </h3>
+        {% for item in order['items'] %}
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.75rem; font-size: 0.88rem; border-bottom: 1px dashed var(--border-color); padding-bottom: 0.5rem;">
+            <div>
+              <div style="font-weight: 700; color: var(--text-main);">{{ item.title }}</div>
+              <div style="font-size: 0.78rem; color: var(--primary);"><i class="fa-solid fa-tractor"></i> {{ item.farmer_name }}</div>
+            </div>
+            <div style="text-align: right;">
+              <div style="font-weight: 700;">₹{{ item.total }}</div>
+              <div style="font-size: 0.78rem; color: var(--text-muted);">{{ item.quantity }} &times; {{ item.unit }}</div>
+            </div>
+          </div>
+        {% endfor %}
+        <div style="display: flex; justify-content: space-between; font-weight: 800; font-size: 1.05rem; color: var(--primary-dark); margin-top: 0.75rem;">
+          <span>Total Paid:</span>
+          <span>₹{{ order.total_amount }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

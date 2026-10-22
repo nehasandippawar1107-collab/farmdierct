@@ -1,0 +1,180 @@
+{% extends "base.html" %}
+
+{% block title %}Contact & Farmer Support | FarmDirect{% endblock %}
+
+{% block content %}
+<div class="container" style="margin-top: 2.5rem; margin-bottom: 4.5rem;">
+  <!-- Header -->
+  <div style="text-align: center; max-width: 680px; margin: 0 auto 3rem;">
+    <span class="role-badge farmer" style="margin-bottom: 0.5rem; display: inline-block;">
+      <i class="fa-solid fa-headset"></i> We're Here For You
+    </span>
+    <h1 style="font-size: 2.4rem; font-weight: 800; color: var(--primary-dark); margin: 0 0 0.5rem;">
+      Get in Touch with FarmDirect
+    </h1>
+    <p style="color: var(--text-muted); font-size: 1.05rem;">
+      Have a question about an order, want to partner as a farmer collective, or need community wholesale assistance? Send us a message!
+    </p>
+  </div>
+
+  <div style="display: grid; grid-template-columns: 1fr 1.25fr; gap: 3rem; margin-bottom: 4rem;">
+    <!-- Left Column: Contact Cards -->
+    <div>
+      <div style="background: #ffffff; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 2rem; box-shadow: var(--shadow-sm); margin-bottom: 1.5rem;">
+        <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--primary-dark); margin-bottom: 1.5rem;">
+          Our Agricultural Hubs
+        </h3>
+
+        <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem;">
+          <div style="width: 44px; height: 44px; border-radius: var(--radius-sm); background: var(--primary-subtle); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1.25rem; flex-shrink: 0;">
+            <i class="fa-solid fa-location-dot"></i>
+          </div>
+          <div>
+            <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.2rem;">Central Operations & QC Hub</h4>
+            <p style="font-size: 0.88rem; color: var(--text-muted); margin: 0; line-height: 1.5;">
+              Plot 42, Agro-Innovation Corridor, Nashik Agri-Park, Maharashtra 422007
+            </p>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem;">
+          <div style="width: 44px; height: 44px; border-radius: var(--radius-sm); background: #e0f2fe; color: #0284c7; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; flex-shrink: 0;">
+            <i class="fa-solid fa-phone"></i>
+          </div>
+          <div>
+            <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.2rem;">Helpline & WhatsApp Support</h4>
+            <p style="font-size: 0.88rem; color: var(--text-muted); margin: 0;">
+              +91 98765 00000 / +91 98765 11111<br>
+              <span style="font-size: 0.78rem; color: var(--text-light);">(Mon - Sat, 6:00 AM - 9:00 PM IST)</span>
+            </p>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 1rem;">
+          <div style="width: 44px; height: 44px; border-radius: var(--radius-sm); background: #fef3c7; color: #d97706; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; flex-shrink: 0;">
+            <i class="fa-solid fa-envelope"></i>
+          </div>
+          <div>
+            <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.2rem;">Email Desk</h4>
+            <p style="font-size: 0.88rem; color: var(--text-muted); margin: 0;">
+              support@farmdirect.com<br>
+              farmers@farmdirect.com
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Farmer Onboarding Help Note -->
+      <div style="background: var(--primary-ghost); border: 1.5px dashed var(--primary-soft); border-radius: var(--radius-md); padding: 1.5rem;">
+        <h4 style="font-size: 1rem; font-weight: 800; color: var(--primary-dark); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+          <i class="fa-solid fa-tractor" style="color: var(--primary);"></i> Are you a local farmer?
+        </h4>
+        <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1rem; line-height: 1.5;">
+          Our agricultural field executives provide free setup assistance, digital photography of your crops, and direct bank onboarding.
+        </p>
+        <a href="{{ url_for('register', role='farmer') }}" class="btn btn-primary btn-sm">
+          Register Online as a Farmer
+        </a>
+      </div>
+    </div>
+
+    <!-- Right Column: Interactive Contact Form -->
+    <div>
+      <div style="background: #ffffff; border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 2.5rem; box-shadow: var(--shadow-sm);">
+        <h2 style="font-size: 1.5rem; font-weight: 800; color: var(--primary-dark); margin-bottom: 1.5rem;">
+          Send Us a Message
+        </h2>
+
+        <form action="{{ url_for('contact') }}" method="POST">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label" for="contact-name">Your Full Name *</label>
+              <input type="text" id="contact-name" name="name" class="form-control" placeholder="e.g. Anand Joshi" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="contact-email">Email Address *</label>
+              <input type="email" id="contact-email" name="email" class="form-control" placeholder="name@example.com" required>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label" for="role_inquiry">You Are A</label>
+              <select id="role_inquiry" name="role_inquiry" class="form-control">
+                <option value="Customer">Household Consumer</option>
+                <option value="Farmer">Farmer / Organic Producer</option>
+                <option value="Cooperative">Housing Society / Bulk Buyer</option>
+                <option value="General">Media / Other Inquiry</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="contact-subject">Subject</label>
+              <input type="text" id="contact-subject" name="subject" class="form-control" placeholder="e.g. Question about order or harvest">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="contact-message">Message Details *</label>
+            <textarea id="contact-message" name="message" class="form-control" rows="5" placeholder="Write your inquiry here..." required></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block btn-lg">
+            <i class="fa-regular fa-paper-plane"></i> Send Inquiry Message
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Frequently Asked Questions Accordion -->
+  <div style="background: #ffffff; border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 2.5rem; box-shadow: var(--shadow-sm);">
+    <div style="text-align: center; margin-bottom: 2rem;">
+      <h2 style="font-size: 1.8rem; font-weight: 800; color: var(--primary-dark); margin: 0 0 0.4rem;">
+        Frequently Asked Questions
+      </h2>
+      <p style="color: var(--text-muted); font-size: 0.95rem;">
+        Everything you need to know about direct farm-to-door delivery.
+      </p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+      <div style="background: var(--bg-page); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.5rem;">
+        <h4 style="font-size: 1.05rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 0.4rem;">
+          How fresh is the produce when delivered?
+        </h4>
+        <p style="font-size: 0.88rem; color: var(--text-muted); margin: 0; line-height: 1.5;">
+          Unlike supermarkets where items spend 4-7 days in transit and warehouses, FarmDirect products are harvested by the farmer immediately upon receiving your order and dispatched via cold-chain routes.
+        </p>
+      </div>
+
+      <div style="background: var(--bg-page); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.5rem;">
+        <h4 style="font-size: 1.05rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 0.4rem;">
+          How do farmers receive their money?
+        </h4>
+        <p style="font-size: 0.88rem; color: var(--text-muted); margin: 0; line-height: 1.5;">
+          100% of the produce cost goes directly to the farmer without middleman commission cuts. Digital payments are credited immediately or upon successful delivery for COD orders.
+        </p>
+      </div>
+
+      <div style="background: var(--bg-page); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.5rem;">
+        <h4 style="font-size: 1.05rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 0.4rem;">
+          What payment options are supported?
+        </h4>
+        <p style="font-size: 0.88rem; color: var(--text-muted); margin: 0; line-height: 1.5;">
+          We support Cash on Delivery (Pay on Delivery), instant UPI (QR code scan or VPA), Credit/Debit Cards, and Net Banking across all major Indian banks.
+        </p>
+      </div>
+
+      <div style="background: var(--bg-page); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.5rem;">
+        <h4 style="font-size: 1.05rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 0.4rem;">
+          How do you verify partner farmers?
+        </h4>
+        <p style="font-size: 0.88rem; color: var(--text-muted); margin: 0; line-height: 1.5;">
+          Every farmer undergoes physical site verification by our agricultural field agents. Soil tests and organic certification records are inspected and maintained on the platform.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

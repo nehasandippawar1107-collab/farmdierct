@@ -1,0 +1,163 @@
+{% extends "base.html" %}
+
+{% block title %}Shopping Cart | FarmDirect{% endblock %}
+
+{% block content %}
+<div class="container">
+  <!-- Breadcrumb & Header -->
+  <div style="margin-top: 2rem; margin-bottom: 2rem;">
+    <h1 style="font-size: 2.2rem; font-weight: 800; color: var(--primary-dark); margin: 0;">
+      Your Farm Fresh Basket
+    </h1>
+    <p style="color: var(--text-muted); font-size: 1rem; margin-top: 0.25rem;">
+      Fresh produce harvested directly from farmers upon order confirmation.
+    </p>
+  </div>
+
+  {% if items %}
+    <div class="cart-layout">
+      <!-- Left: Table of Cart Items -->
+      <div>
+        <div class="cart-table-wrapper">
+          <table class="cart-table">
+            <thead>
+              <tr>
+                <th>Product & Farmer</th>
+                <th>Price</th>
+                <th style="text-align: center;">Quantity</th>
+                <th style="text-align: right;">Total</th>
+                <th style="text-align: center;">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in items %}
+                <tr>
+                  <td>
+                    <div class="cart-item-info">
+                      <img src="{{ item.product.image }}" alt="{{ item.product.title }}" class="cart-item-img">
+                      <div>
+                        <h4 style="font-size: 1.05rem; font-weight: 700; margin-bottom: 0.2rem;">
+                          <a href="{{ url_for('product_detail', product_id=item.product.id) }}" style="color: var(--text-main);">
+                            {{ item.product.title }}
+                          </a>
+                        </h4>
+                        <div style="font-size: 0.8rem; color: var(--primary); font-weight: 600;">
+                          <i class="fa-solid fa-tractor"></i> {{ item.product.farmer_name }} ({{ item.product.location.split(',')[0] }})
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <div style="font-weight: 700; color: var(--text-main);">₹{{ item.product.price }}</div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted);">/ {{ item.product.unit }}</div>
+                  </td>
+                  <td style="text-align: center;">
+                    <div class="qty-controls">
+                      <form action="{{ url_for('update_cart') }}" method="POST" style="display: inline;">
+                        <input type="hidden" name="product_id" value="{{ item.product.id }}">
+                        <input type="hidden" name="action" value="decrease">
+                        <button type="submit" class="qty-btn" title="Decrease">&minus;</button>
+                      </form>
+                      <span class="qty-value">{{ item.quantity }}</span>
+                      <form action="{{ url_for('update_cart') }}" method="POST" style="display: inline;">
+                        <input type="hidden" name="product_id" value="{{ item.product.id }}">
+                        <input type="hidden" name="action" value="increase">
+                        <button type="submit" class="qty-btn" title="Increase" {% if item.quantity >= item.product.stock %}disabled{% endif %}>&#43;</button>
+                      </form>
+                    </div>
+                  </td>
+                  <td style="text-align: right; font-weight: 800; font-size: 1.1rem; color: var(--primary-dark);">
+                    ₹{{ item.line_total }}
+                  </td>
+                  <td style="text-align: center;">
+                    <form action="{{ url_for('update_cart') }}" method="POST">
+                      <input type="hidden" name="product_id" value="{{ item.product.id }}">
+                      <input type="hidden" name="action" value="remove">
+                      <button type="submit" style="background: none; border: none; color: var(--danger); cursor: pointer; font-size: 1rem;" title="Remove from basket">
+                        <i class="fa-regular fa-trash-can"></i>
+                      </button>
+                    </form>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Cart Action Buttons -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem;">
+          <a href="{{ url_for('marketplace') }}" class="btn btn-secondary">
+            <i class="fa-solid fa-arrow-left"></i> Continue Shopping
+          </a>
+          <form action="{{ url_for('clear_cart') }}" method="POST" onsubmit="return confirm('Clear your entire cart?');">
+            <button type="submit" class="btn btn-outline" style="border-color: #d1d5db; color: var(--text-muted);">
+              Clear Basket
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Right: Order Summary Sidebar -->
+      <div>
+        <div class="order-summary-box">
+          <h3 style="font-size: 1.3rem; font-weight: 800; color: var(--primary-dark); margin-bottom: 1.25rem;">
+            Order Summary
+          </h3>
+
+          <div class="summary-row">
+            <span>Fresh Harvest Subtotal</span>
+            <span style="font-weight: 700;">₹{{ subtotal }}</span>
+          </div>
+
+          <div class="summary-row">
+            <span>Direct Delivery Fee</span>
+            {% if delivery_fee == 0 %}
+              <span style="color: #15803d; font-weight: 700;">FREE (Orders &ge; ₹300)</span>
+            {% else %}
+              <span style="font-weight: 700;">₹{{ delivery_fee }}</span>
+            {% endif %}
+          </div>
+
+          <!-- Savings Calculation Notice -->
+          <div class="savings-banner">
+            <i class="fa-solid fa-piggy-bank" style="font-size: 1.25rem;"></i>
+            <div>
+              You saved approx. <strong>₹{{ middleman_savings }}</strong> by ordering direct without retail middleman commissions!
+            </div>
+          </div>
+
+          <div class="summary-row total">
+            <span>Grand Total</span>
+            <span>₹{{ grand_total }}</span>
+          </div>
+
+          <a href="{{ url_for('checkout') }}" class="btn btn-primary btn-block btn-lg" style="margin-top: 1.5rem;">
+            Proceed to Checkout <i class="fa-solid fa-arrow-right"></i>
+          </a>
+
+          <div style="margin-top: 1.25rem; font-size: 0.8rem; color: var(--text-muted); display: flex; flex-direction: column; gap: 0.4rem;">
+            <div><i class="fa-solid fa-lock" style="color: var(--primary);"></i> 100% Secure Checkout</div>
+            <div><i class="fa-solid fa-hand-holding-heart" style="color: var(--primary);"></i> 100% of harvest price reaches the farmer</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% else %}
+    <!-- Empty Cart State -->
+    <div style="background: #ffffff; border: 1.5px dashed var(--border-color); border-radius: var(--radius-lg); padding: 4.5rem 2rem; text-align: center; max-width: 600px; margin: 3rem auto 5rem;">
+      <div style="width: 80px; height: 80px; border-radius: 50%; background: var(--primary-subtle); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 2.2rem; margin: 0 auto 1.5rem;">
+        <i class="fa-solid fa-basket-shopping"></i>
+      </div>
+      <h2 style="font-size: 1.6rem; font-weight: 800; color: var(--primary-dark); margin-bottom: 0.5rem;">
+        Your Fresh Basket is Empty
+      </h2>
+      <p style="color: var(--text-muted); font-size: 1rem; margin-bottom: 1.75rem; line-height: 1.5;">
+        Discover naturally grown vegetables, fruits, and organic grains directly from verified farmers at unbeatable prices.
+      </p>
+      <a href="{{ url_for('marketplace') }}" class="btn btn-primary btn-lg">
+        <i class="fa-solid fa-leaf"></i> Explore Marketplace Now
+      </a>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}
