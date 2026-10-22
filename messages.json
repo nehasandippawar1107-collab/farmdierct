@@ -1,0 +1,72 @@
+[
+  {
+    "name": "Suresh Kumar",
+    "email": "suresh@example.com",
+    "role_inquiry": "Farmer",
+    "subject": "Partnering with my pomegranate orchard",
+    "message": "Hello, I have 10 acres of Bhagwa pomegranates in Solapur and want to list on FarmDirect.",
+    "id": "msg-5d0a8d",
+    "created_at": "2026-10-22 13:09:45",
+    "status": "unread"
+  },
+  {
+    "name": "Suresh Kumar",
+    "email": "suresh@example.com",
+    "role_inquiry": "Farmer",
+    "subject": "Partnering with my pomegranate orchard",
+    "message": "Hello, I have 10 acres of Bhagwa pomegranates in Solapur and want to list on FarmDirect.",
+    "id": "msg-d3c28b",
+    "created_at": "2026-10-22 00:13:13",
+    "status": "unread"
+  },
+  {
+    "name": "Suresh Kumar",
+    "email": "suresh@example.com",
+    "role_inquiry": "Farmer",
+    "subject": "Partnering with my pomegranate orchard",
+    "message": "Hello, I have 10 acres of Bhagwa pomegranates in Solapur and want to list on FarmDirect.",
+    "id": "msg-310955",
+    "created_at": "2026-10-21 23:54:28",
+    "status": "unread"
+  },
+  {
+    "name": "Suresh Kumar",
+    "email": "suresh@example.com",
+    "role_inquiry": "Farmer",
+    "subject": "Partnering with my pomegranate orchard",
+    "message": "Hello, I have 10 acres of Bhagwa pomegranates in Solapur and want to list on FarmDirect.",
+    "id": "msg-eaeb1b",
+    "created_at": "2026-10-21 23:52:04",
+    "status": "unread"
+  },
+  {
+    "name": "Suresh Kumar",
+    "email": "suresh@example.com",
+    "role_inquiry": "Farmer",
+    "subject": "Partnering with my pomegranate orchard",
+    "message": "Hello, I have 10 acres of Bhagwa pomegranates in Solapur and want to list on FarmDirect.",
+    "id": "msg-cad281",
+    "created_at": "2026-10-21 23:51:52",
+    "status": "unread"
+  },
+  {
+    "id": "msg-1",
+    "name": "Kavita Deshmukh",
+    "email": "kavita.deshmukh@gmail.com",
+    "role_inquiry": "Consumer",
+    "subject": "Bulk orders for apartment community cooperative",
+    "message": "Hello FarmDirect team! We have 80 families in our housing society who wish to organize a weekly collective delivery directly from Ramesh Patel's farm. Can we arrange regular scheduled slots?",
+    "status": "unread",
+    "created_at": "2026-10-21 11:20:00"
+  },
+  {
+    "id": "msg-2",
+    "name": "Balwant Singh",
+    "email": "balwant.singh@punjaborganic.org",
+    "role_inquiry": "Farmer",
+    "subject": "Onboarding 15 organic mustard and pulse farmers",
+    "message": "Greetings, we run a smallholder collective in Bathinda with NPOP organic certification. We want to list our cold-pressed oils on FarmDirect. Please contact us for verification.",
+    "status": "unread",
+    "created_at": "2026-10-21 16:40:00"
+  }
+]

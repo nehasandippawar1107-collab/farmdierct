@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+
+{% block title %}Register Account | FarmDirect{% endblock %}
+
+{% block content %}
+<div class="container auth-wrapper" style="max-width: 580px;">
+  <div class="auth-card">
+    <div class="auth-header">
+      <div class="brand-icon" style="margin: 0 auto 1rem; width: 48px; height: 48px; font-size: 1.5rem;">
+        <i class="fa-solid fa-leaf"></i>
+      </div>
+      <h1 class="auth-title">Join FarmDirect</h1>
+      <p class="auth-subtitle">Create an account to buy or sell fresh farm produce directly</p>
+    </div>
+
+    <!-- Role Selection Tabs -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; background: #f3f4f6; padding: 0.4rem; border-radius: var(--radius-md); margin-bottom: 2rem;">
+      <button type="button" id="tab-cust" class="btn {% if role_selected != 'farmer' %}btn-primary{% else %}btn-secondary{% endif %}" style="border-radius: var(--radius-sm);" onclick="switchRole('customer')">
+        <i class="fa-solid fa-basket-shopping"></i> Customer Account
+      </button>
+      <button type="button" id="tab-farm" class="btn {% if role_selected == 'farmer' %}btn-primary{% else %}btn-secondary{% endif %}" style="border-radius: var(--radius-sm);" onclick="switchRole('farmer')">
+        <i class="fa-solid fa-tractor"></i> Farmer Account
+      </button>
+    </div>
+
+    <!-- Registration Form -->
+    <form action="{{ url_for('register') }}" method="POST">
+      <!-- Hidden Role Input -->
+      <input type="hidden" name="role" id="role-input" value="{{ role_selected }}">
+
+      <div class="form-group">
+        <label class="form-label" for="reg-name">Full Name *</label>
+        <input type="text" id="reg-name" name="name" class="form-control" placeholder="e.g. Ramesh Patel" required>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+        <div class="form-group">
+          <label class="form-label" for="reg-email">Email Address *</label>
+          <input type="email" id="reg-email" name="email" class="form-control" placeholder="name@example.com" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="reg-phone">Phone Number *</label>
+          <input type="tel" id="reg-phone" name="phone" class="form-control" placeholder="+91 98765 43210" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="reg-password">Password *</label>
+        <input type="password" id="reg-password" name="password" class="form-control" placeholder="Minimum 6 characters" minlength="6" required>
+      </div>
+
+      <!-- Farmer Specific Fields -->
+      <div id="farmer-fields" style="display: {% if role_selected == 'farmer' %}block{% else %}none{% endif %}; background: var(--primary-ghost); border: 1px solid var(--border-green); border-radius: var(--radius-md); padding: 1.25rem; margin-bottom: 1.5rem;">
+        <div style="font-size: 0.88rem; font-weight: 800; color: var(--primary-dark); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.4rem;">
+          <i class="fa-solid fa-seedling"></i> Farm Details
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="farm_name">Farm or Estate Name *</label>
+          <input type="text" id="farm_name" name="farm_name" class="form-control" placeholder="e.g. Sunita's Apple Orchard">
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div class="form-group">
+            <label class="form-label" for="location">Location / District, State *</label>
+            <input type="text" id="location" name="location" class="form-control" placeholder="e.g. Nashik, Maharashtra">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="farming_type">Farming Practice</label>
+            <select id="farming_type" name="farming_type" class="form-control">
+              <option value="Certified Organic">Certified Organic</option>
+              <option value="Natural / Zero Budget">Natural / Desi Method</option>
+              <option value="Hydroponic">Hydroponic / Protected</option>
+              <option value="Traditional Grain Agro">Traditional Grain Agro</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 0;">
+          <label class="form-label" for="bio">Short Farm Bio</label>
+          <input type="text" id="bio" name="bio" class="form-control" placeholder="e.g. 3rd generation grower of fresh vine vegetables and pomegranates.">
+        </div>
+      </div>
+
+      <!-- Customer Specific Fields -->
+      <div id="customer-fields" style="display: {% if role_selected != 'farmer' %}block{% else %}none{% endif %}; margin-bottom: 1.5rem;">
+        <div class="form-group" style="margin-bottom: 0;">
+          <label class="form-label" for="address">Default Delivery Address</label>
+          <input type="text" id="address" name="address" class="form-control" placeholder="Flat No., Building Name, Street, City, Pincode">
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-block btn-lg">
+        <i class="fa-solid fa-user-plus"></i> Complete Registration
+      </button>
+    </form>
+
+    <div style="text-align: center; margin-top: 1.75rem; font-size: 0.92rem; color: var(--text-muted);">
+      Already have an account? 
+      <a href="{{ url_for('login') }}" style="font-weight: 700; color: var(--primary);">
+        Sign In
+      </a>
+    </div>
+  </div>
+</div>
+
+<script>
+function switchRole(role) {
+  const roleInput = document.getElementById('role-input');
+  const farmerFields = document.getElementById('farmer-fields');
+  const customerFields = document.getElementById('customer-fields');
+  const tabCust = document.getElementById('tab-cust');
+  const tabFarm = document.getElementById('tab-farm');
+
+  roleInput.value = role;
+
+  if (role === 'farmer') {
+    farmerFields.style.display = 'block';
+    customerFields.style.display = 'none';
+    tabFarm.className = 'btn btn-primary';
+    tabCust.className = 'btn btn-secondary';
+  } else {
+    farmerFields.style.display = 'none';
+    customerFields.style.display = 'block';
+    tabCust.className = 'btn btn-primary';
+    tabFarm.className = 'btn btn-secondary';
+  }
+}
+</script>
+{% endblock %}

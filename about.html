@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+
+{% block title %}About Us | FarmDirect - The Direct Farm-to-Consumer Revolution{% endblock %}
+
+{% block content %}
+<!-- Hero Section for About -->
+<section style="background: linear-gradient(135deg, var(--primary-dark), var(--primary)); color: #ffffff; padding: 4.5rem 0 4rem; text-align: center;">
+  <div class="container" style="max-width: 780px;">
+    <span class="hero-badge" style="background: rgba(255,255,255,0.15); color: #d8f3dc; margin-bottom: 1rem;">
+      <i class="fa-solid fa-leaf"></i> Our Mission & Purpose
+    </span>
+    <h1 style="font-size: 2.8rem; font-weight: 800; line-height: 1.2; margin-bottom: 1.25rem;">
+      Connecting Indian Soil Directly to Your Table
+    </h1>
+    <p style="font-size: 1.15rem; color: #d1fae5; line-height: 1.6;">
+      FarmDirect was founded on a simple yet radical idea: farmers who feed our nation deserve 100% fair compensation, and consumers deserve food picked fresh rather than aged in middlemen warehouses.
+    </p>
+  </div>
+</section>
+
+<!-- The Problem vs Solution -->
+<section class="container" style="margin: 4.5rem auto;">
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center;">
+    <div>
+      <span class="role-badge farmer" style="margin-bottom: 0.75rem; display: inline-block;">
+        The Traditional Agricultural Problem
+      </span>
+      <h2 style="font-size: 2rem; font-weight: 800; color: var(--primary-dark); margin-bottom: 1rem; line-height: 1.25;">
+        Middlemen Take Up to 55% of Crop Value
+      </h2>
+      <p style="font-size: 1rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 1rem;">
+        In traditional wholesale supply chains, agricultural produce changes hands 5 to 7 times—through village aggregators, APMC mandi commission agents, regional wholesalers, transport cartels, and neighborhood retailers.
+      </p>
+      <p style="font-size: 1rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 1.5rem;">
+        By the time vegetables and fruits reach households, they are days old, nutrient-depleted, and artificially ripened. Worse, the farmer often receives barely 20% to 35% of the final retail price.
+      </p>
+
+      <div style="display: flex; gap: 1rem;">
+        <div style="border-left: 3px solid var(--danger); padding-left: 1rem;">
+          <h4 style="font-size: 1.1rem; font-weight: 700; color: var(--danger); margin: 0;">5-7 Days Transit</h4>
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0.2rem 0 0;">Stale supermarket shelves</p>
+        </div>
+        <div style="border-left: 3px solid var(--danger); padding-left: 1rem;">
+          <h4 style="font-size: 1.1rem; font-weight: 700; color: var(--danger); margin: 0;">50%+ Markup</h4>
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0.2rem 0 0;">Absorbed by middle tiers</p>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <img src="https://images.unsplash.com/photo-1595974482597-4b8da8879bc5?w=700&auto=format&fit=crop&q=80" alt="Farmer holding fresh harvest" style="border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); width: 100%; height: 380px; object-fit: cover;">
+    </div>
+  </div>
+</section>
+
+<!-- FarmDirect Solution Cards -->
+<section style="background: #ffffff; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); padding: 4.5rem 0;">
+  <div class="container">
+    <div style="text-align: center; max-width: 640px; margin: 0 auto 3.5rem;">
+      <h2 class="section-title">The FarmDirect Difference</h2>
+      <p class="section-subtitle">How our transparent technology platform rebalances the harvest economy</p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 2rem;">
+      <div style="background: var(--bg-page); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 2rem;">
+        <div style="width: 52px; height: 52px; border-radius: var(--radius-sm); background: #dcfce7; color: #15803d; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 1.25rem;">
+          <i class="fa-solid fa-hand-holding-dollar"></i>
+        </div>
+        <h3 style="font-size: 1.2rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 0.5rem;">Fair Farmer Pricing</h3>
+        <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.5;">
+          Farmers set their own selling prices based on their cultivation costs and quality, pocketing 100% of the harvest price.
+        </p>
+      </div>
+
+      <div style="background: var(--bg-page); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 2rem;">
+        <div style="width: 52px; height: 52px; border-radius: var(--radius-sm); background: #e0f2fe; color: #0284c7; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 1.25rem;">
+          <i class="fa-solid fa-clock-rotate-left"></i>
+        </div>
+        <h3 style="font-size: 1.2rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 0.5rem;">Harvest on Demand</h3>
+        <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.5;">
+          Produce is harvested only after your order is confirmed. No chemical waxing, artificial coloring, or carbide ripening.
+        </p>
+      </div>
+
+      <div style="background: var(--bg-page); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 2rem;">
+        <div style="width: 52px; height: 52px; border-radius: var(--radius-sm); background: #fef3c7; color: #d97706; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 1.25rem;">
+          <i class="fa-solid fa-magnifying-glass-location"></i>
+        </div>
+        <h3 style="font-size: 1.2rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 0.5rem;">100% Traceability</h3>
+        <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.5;">
+          Every item displays the farmer's name, farm location, and agricultural practices. You know exactly where your food comes from.
+        </p>
+      </div>
+
+      <div style="background: var(--bg-page); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 2rem;">
+        <div style="width: 52px; height: 52px; border-radius: var(--radius-sm); background: #f3e8ff; color: #7e22ce; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 1.25rem;">
+          <i class="fa-solid fa-piggy-bank"></i>
+        </div>
+        <h3 style="font-size: 1.2rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 0.5rem;">30-35% Consumer Savings</h3>
+        <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.5;">
+          By bypassing multiple layers of trader commissions, consumers enjoy premium farm-fresh produce at lower retail rates.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Impact Numbers & CTA -->
+<section class="container" style="margin: 4.5rem auto; text-align: center;">
+  <h2 class="section-title">Ready to Experience True Freshness?</h2>
+  <p class="section-subtitle" style="margin-bottom: 2rem;">Join the direct agricultural movement today</p>
+  <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+    <a href="{{ url_for('marketplace') }}" class="btn btn-primary btn-lg">
+      <i class="fa-solid fa-basket-shopping"></i> Explore Marketplace
+    </a>
+    <a href="{{ url_for('register', role='farmer') }}" class="btn btn-outline btn-lg">
+      <i class="fa-solid fa-tractor"></i> Join as a Partner Farmer
+    </a>
+  </div>
+</section>
+{% endblock %}

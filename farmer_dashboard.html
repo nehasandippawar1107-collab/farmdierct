@@ -1,0 +1,253 @@
+{% extends "base.html" %}
+
+{% block title %}Farmer Dashboard | FarmDirect{% endblock %}
+
+{% block content %}
+<div class="container" style="margin-top: 2.5rem; margin-bottom: 4.5rem;">
+  <!-- Farmer Welcome Header -->
+  <div style="background: linear-gradient(135deg, var(--primary-dark), var(--primary)); border-radius: var(--radius-lg); padding: 2.5rem; color: #ffffff; margin-bottom: 2.5rem; box-shadow: var(--shadow-md); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.5rem;">
+    <div>
+      <div style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.5rem;">
+        <span class="role-badge farmer" style="background: rgba(255,255,255,0.2); color: #ffffff; border: 1px solid rgba(255,255,255,0.3);">
+          <i class="fa-solid fa-wheat-awn"></i> Partner Farmer Portal
+        </span>
+        <span class="status-pill approved"><i class="fa-solid fa-check"></i> Verified Grower</span>
+      </div>
+      <h1 style="font-size: 2.2rem; font-weight: 800; margin: 0; line-height: 1.2;">
+        Welcome back, {{ farmer.name }}!
+      </h1>
+      <p style="color: #d1fae5; font-size: 1rem; margin-top: 0.4rem;">
+        <i class="fa-solid fa-location-dot"></i> {{ farmer.farm_name }} &bull; {{ farmer.location }}
+      </p>
+    </div>
+
+    <div>
+      <a href="{{ url_for('add_product') }}" class="btn btn-primary btn-lg" style="background: #ffffff; color: var(--primary-dark); font-weight: 800;">
+        <i class="fa-solid fa-plus-circle"></i> Add Fresh Produce
+      </a>
+    </div>
+  </div>
+
+  <!-- KPI Stats Grid -->
+  <div class="dashboard-stats-grid">
+    <div class="dash-stat-card">
+      <div class="dash-stat-icon">
+        <i class="fa-solid fa-carrot"></i>
+      </div>
+      <div>
+        <div class="dash-stat-val">{{ stats.total_products }}</div>
+        <div class="dash-stat-title">Active Listed Produce</div>
+      </div>
+    </div>
+
+    <div class="dash-stat-card">
+      <div class="dash-stat-icon" style="background: #e0f2fe; color: #0284c7;">
+        <i class="fa-solid fa-receipt"></i>
+      </div>
+      <div>
+        <div class="dash-stat-val">{{ stats.total_orders }}</div>
+        <div class="dash-stat-title">Total Orders Received</div>
+      </div>
+    </div>
+
+    <div class="dash-stat-card">
+      <div class="dash-stat-icon" style="background: #dcfce7; color: #15803d;">
+        <i class="fa-solid fa-indian-rupee-sign"></i>
+      </div>
+      <div>
+        <div class="dash-stat-val">₹{{ stats.total_revenue }}</div>
+        <div class="dash-stat-title">Direct Earnings (0% Cut)</div>
+      </div>
+    </div>
+
+    <div class="dash-stat-card">
+      <div class="dash-stat-icon" style="background: #fef3c7; color: #d97706;">
+        <i class="fa-solid fa-hourglass-half"></i>
+      </div>
+      <div>
+        <div class="dash-stat-val">{{ stats.pending_orders }}</div>
+        <div class="dash-stat-title">Harvests to Confirm</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 1: My Listed Produce -->
+  <div class="table-card">
+    <div class="table-header-flex">
+      <div>
+        <h2 style="font-size: 1.4rem; font-weight: 800; color: var(--primary-dark); margin: 0;">
+          My Produce Catalog
+        </h2>
+        <p style="color: var(--text-muted); font-size: 0.88rem; margin: 0.2rem 0 0;">
+          Manage your live crop inventory, pricing per unit, and harvest dates.
+        </p>
+      </div>
+      <a href="{{ url_for('add_product') }}" class="btn btn-primary btn-sm">
+        <i class="fa-solid fa-plus"></i> Add New Product
+      </a>
+    </div>
+
+    {% if products %}
+      <div class="table-responsive">
+        <table class="custom-table">
+          <thead>
+            <tr>
+              <th>Produce</th>
+              <th>Category</th>
+              <th>Price / Unit</th>
+              <th>Stock Remaining</th>
+              <th>Harvest Timing</th>
+              <th>Type</th>
+              <th style="text-align: right;">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for prod in products %}
+              <tr>
+                <td>
+                  <div style="display: flex; align-items: center; gap: 0.85rem;">
+                    <img src="{{ prod.image }}" alt="{{ prod.title }}" style="width: 48px; height: 48px; border-radius: var(--radius-sm); object-fit: cover;">
+                    <div>
+                      <a href="{{ url_for('product_detail', product_id=prod.id) }}" style="font-weight: 700; color: var(--text-main);">
+                        {{ prod.title }}
+                      </a>
+                      <div style="font-size: 0.78rem; color: var(--text-muted);">ID: {{ prod.id }}</div>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <span class="role-badge farmer">{{ prod.category }}</span>
+                </td>
+                <td>
+                  <strong style="color: var(--primary-dark);">₹{{ prod.price }}</strong>
+                  <span style="font-size: 0.78rem; color: var(--text-muted);">/ {{ prod.unit }}</span>
+                </td>
+                <td>
+                  {% if prod.stock > 10 %}
+                    <span class="status-pill approved">{{ prod.stock }} in stock</span>
+                  {% elif prod.stock > 0 %}
+                    <span class="status-pill placed">Low: {{ prod.stock }} left</span>
+                  {% else %}
+                    <span class="status-pill" style="background: #fee2e2; color: #b91c1c;">Sold Out</span>
+                  {% endif %}
+                </td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">
+                  <i class="fa-regular fa-clock"></i> {{ prod.harvest_date }}
+                </td>
+                <td>
+                  {% if prod.organic %}
+                    <span class="card-badge organic" style="position: static; font-size: 0.72rem;">Organic</span>
+                  {% else %}
+                    <span style="font-size: 0.78rem; color: var(--text-muted);">Natural</span>
+                  {% endif %}
+                </td>
+                <td style="text-align: right;">
+                  <div style="display: inline-flex; gap: 0.4rem;">
+                    <a href="{{ url_for('edit_product', product_id=prod.id) }}" class="btn btn-secondary btn-sm" title="Edit Produce">
+                      <i class="fa-regular fa-pen-to-square"></i>
+                    </a>
+                    <form action="{{ url_for('delete_product', product_id=prod.id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete {{ prod.title }}?');" style="display: inline;">
+                      <button type="submit" class="btn btn-danger btn-sm" title="Delete Produce">
+                        <i class="fa-regular fa-trash-can"></i>
+                      </button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <div style="text-align: center; padding: 3rem 1rem; color: var(--text-muted);">
+        <i class="fa-solid fa-wheat-awn" style="font-size: 2.5rem; color: var(--primary-accent); margin-bottom: 0.75rem;"></i>
+        <p>You haven't listed any farm crops yet.</p>
+        <a href="{{ url_for('add_product') }}" class="btn btn-primary btn-sm">Add Your First Product</a>
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- Section 2: Incoming Orders & Status Management -->
+  <div class="table-card">
+    <div class="table-header-flex">
+      <div>
+        <h2 style="font-size: 1.4rem; font-weight: 800; color: var(--primary-dark); margin: 0;">
+          Customer Orders For Your Harvest
+        </h2>
+        <p style="color: var(--text-muted); font-size: 0.88rem; margin: 0.2rem 0 0;">
+          Update customer order status as you harvest, pack, and hand off to delivery.
+        </p>
+      </div>
+    </div>
+
+    {% if orders %}
+      <div class="table-responsive">
+        <table class="custom-table">
+          <thead>
+            <tr>
+              <th>Order ID & Date</th>
+              <th>Customer & Destination</th>
+              <th>Your Produce Ordered</th>
+              <th>Your Payout</th>
+              <th>Current Status</th>
+              <th style="min-width: 220px;">Update Progress</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for ord in orders %}
+              <tr>
+                <td>
+                  <strong style="color: var(--primary-dark); font-size: 0.95rem;">{{ ord.id }}</strong>
+                  <div style="font-size: 0.78rem; color: var(--text-muted);">{{ ord.created_at }}</div>
+                </td>
+                <td>
+                  <div style="font-weight: 700;">{{ ord.customer_name }}</div>
+                  <div style="font-size: 0.8rem; color: var(--text-muted);"><i class="fa-solid fa-location-dot"></i> {{ ord.delivery_address }}</div>
+                  <div style="font-size: 0.78rem; color: var(--text-muted);"><i class="fa-solid fa-phone"></i> {{ ord.customer_phone }}</div>
+                </td>
+                <td>
+                  {% for item in ord.farmer_items %}
+                    <div style="font-size: 0.85rem; margin-bottom: 0.2rem;">
+                      <strong>{{ item.quantity }}x</strong> {{ item.title }} (₹{{ item.total }})
+                    </div>
+                  {% endfor %}
+                </td>
+                <td>
+                  <strong style="font-size: 1.1rem; color: #15803d;">₹{{ ord.farmer_subtotal }}</strong>
+                  <div style="font-size: 0.75rem; color: var(--text-muted);">{{ ord.payment_status }}</div>
+                </td>
+                <td>
+                  <span class="status-pill {% if ord.order_status == 'Delivered' %}approved{% elif ord.order_status == 'Out for Delivery' %}shipping{% elif ord.order_status in ['Farmer Confirmed', 'Harvested & Packed'] %}confirmed{% else %}pending{% endif %}">
+                    {{ ord.order_status }}
+                  </span>
+                </td>
+                <td>
+                  <!-- Order Status Update Form -->
+                  <form action="{{ url_for('farmer_update_order') }}" method="POST" style="display: flex; gap: 0.4rem; align-items: center;">
+                    <input type="hidden" name="order_id" value="{{ ord.id }}">
+                    <select name="new_status" class="form-control" style="font-size: 0.82rem; padding: 0.4rem 0.5rem;">
+                      <option value="Placed" {% if ord.order_status == 'Placed' %}selected{% endif %}>1. Placed</option>
+                      <option value="Farmer Confirmed" {% if ord.order_status == 'Farmer Confirmed' %}selected{% endif %}>2. Farmer Confirmed</option>
+                      <option value="Harvested & Packed" {% if ord.order_status == 'Harvested & Packed' %}selected{% endif %}>3. Harvested & Packed</option>
+                      <option value="Out for Delivery" {% if ord.order_status == 'Out for Delivery' %}selected{% endif %}>4. Out for Delivery</option>
+                      <option value="Delivered" {% if ord.order_status == 'Delivered' %}selected{% endif %}>5. Delivered</option>
+                    </select>
+                    <button type="submit" class="btn btn-primary btn-sm" title="Save Status">
+                      <i class="fa-solid fa-floppy-disk"></i>
+                    </button>
+                  </form>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <div style="text-align: center; padding: 3rem 1rem; color: var(--text-muted);">
+        <i class="fa-solid fa-basket-shopping" style="font-size: 2.5rem; color: var(--text-light); margin-bottom: 0.75rem;"></i>
+        <p>No orders received yet. Once customers order your produce, they will show up here immediately!</p>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

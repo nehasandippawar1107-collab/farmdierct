@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+
+{% block title %}{{ product.title }} | FarmDirect Fresh Marketplace{% endblock %}
+
+{% block content %}
+<div class="container">
+  <!-- Breadcrumb -->
+  <div style="margin-top: 2rem; margin-bottom: 1rem; font-size: 0.88rem; color: var(--text-muted);">
+    <a href="{{ url_for('index') }}" style="color: var(--text-muted);">Home</a> / 
+    <a href="{{ url_for('marketplace') }}" style="color: var(--text-muted);">Marketplace</a> / 
+    <a href="{{ url_for('marketplace', category=product.category) }}" style="color: var(--text-muted);">{{ product.category }}</a> / 
+    <span style="color: var(--primary); font-weight: 600;">{{ product.title }}</span>
+  </div>
+
+  <!-- Main Product Detail Grid -->
+  <div class="detail-grid">
+    <!-- Left: Image Gallery / Main Image -->
+    <div class="detail-gallery">
+      <img src="{{ product.image }}" alt="{{ product.title }}">
+      {% if product.organic %}
+        <span class="card-badge organic" style="font-size: 0.85rem; padding: 0.4rem 0.9rem; top: 18px; left: 18px;">
+          <i class="fa-solid fa-leaf"></i> 100% Organic Certified
+        </span>
+      {% endif %}
+      <span class="card-harvest-tag" style="bottom: 16px; right: 16px; font-size: 0.85rem; padding: 0.4rem 0.8rem;">
+        <i class="fa-regular fa-clock"></i> {{ product.harvest_date }}
+      </span>
+    </div>
+
+    <!-- Right: Product Information & Purchase Action -->
+    <div class="detail-info">
+      <div class="detail-badges">
+        <span class="role-badge farmer">{{ product.category }}</span>
+        <span class="status-pill approved"><i class="fa-solid fa-check"></i> Direct from Farm</span>
+      </div>
+
+      <h1 class="detail-title">{{ product.title }}</h1>
+
+      <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+        <div style="color: #d97706; font-size: 0.95rem;">
+          <i class="fa-solid fa-star"></i>
+          <i class="fa-solid fa-star"></i>
+          <i class="fa-solid fa-star"></i>
+          <i class="fa-solid fa-star"></i>
+          <i class="fa-solid fa-star-half-stroke"></i>
+        </div>
+        <span style="font-weight: 700; font-size: 0.95rem;">{{ product.rating }}</span>
+        <span style="color: var(--text-muted); font-size: 0.88rem;">({{ product.reviews_count }} verified buyer ratings)</span>
+      </div>
+
+      <p style="color: var(--text-main); font-size: 1.05rem; line-height: 1.6; margin-bottom: 1.25rem;">
+        {{ product.description }}
+      </p>
+
+      <!-- Price Box -->
+      <div class="detail-price-box">
+        <div>
+          <span style="font-size: 0.85rem; color: var(--text-muted); display: block;">Direct Farm Price</span>
+          <span style="font-size: 2.2rem; font-weight: 800; color: var(--primary-dark);">₹{{ product.price }}</span>
+          <span style="font-size: 0.95rem; color: var(--text-muted); font-weight: 600;">/ {{ product.unit }}</span>
+        </div>
+        <div style="text-align: right;">
+          <span style="font-size: 0.82rem; font-weight: 700; color: #15803d; background: #dcfce7; padding: 0.25rem 0.6rem; border-radius: var(--radius-sm); display: inline-block;">
+            Save ~35% vs Supermarket
+          </span>
+          <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.35rem;">
+            In Stock: <strong>{{ product.stock }} units</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- Add to Cart Form -->
+      {% if product.stock > 0 %}
+        <form action="{{ url_for('add_to_cart') }}" method="POST" class="ajax-add-cart-form" style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1.5rem;">
+          <input type="hidden" name="product_id" value="{{ product.id }}">
+          <div style="display: flex; align-items: center; border: 1.5px solid var(--border-color); border-radius: var(--radius-md); padding: 0.2rem 0.5rem; background: #ffffff;">
+            <label for="detail-quantity" style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-right: 0.5rem;">Qty:</label>
+            <input type="number" id="detail-quantity" name="quantity" value="1" min="1" max="{{ product.stock }}" style="width: 60px; padding: 0.4rem; border: none; font-weight: 800; font-size: 1.05rem; outline: none; text-align: center;">
+          </div>
+          <button type="submit" class="btn btn-primary btn-lg" style="flex: 1;">
+            <i class="fa-solid fa-basket-shopping"></i> Add to Cart
+          </button>
+        </form>
+      {% else %}
+        <div class="alert alert-warning">
+          <i class="fa-solid fa-triangle-exclamation"></i> Currently sold out. Farmer is preparing next harvest.
+        </div>
+      {% endif %}
+
+      <!-- Farmer Profile Box -->
+      <div class="detail-farmer-card">
+        <img src="{{ farmer.avatar if farmer and farmer.avatar else 'https://images.unsplash.com/photo-1544717305-2782549b5136?w=200&auto=format&fit=crop&q=80' }}" alt="{{ product.farmer_name }}" class="farmer-avatar">
+        <div style="flex: 1;">
+          <div style="display: flex; align-items: center; gap: 0.5rem; justify-content: space-between;">
+            <h4 style="font-size: 1.05rem; font-weight: 800; color: var(--primary-dark); margin: 0;">{{ product.farmer_name }}</h4>
+            <span class="role-badge farmer"><i class="fa-solid fa-shield-check"></i> Verified Grower</span>
+          </div>
+          <p style="font-size: 0.85rem; color: var(--primary); font-weight: 600; margin: 0.15rem 0;">
+            <i class="fa-solid fa-location-dot"></i> {{ product.farm_name }}, {{ product.location }}
+          </p>
+          <p style="font-size: 0.82rem; color: var(--text-muted); margin: 0.35rem 0 0; line-height: 1.4;">
+            {{ farmer.bio if farmer and farmer.bio else 'Passionate family farm producing fresh harvest with regenerative agriculture practices.' }}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Related Produce -->
+  {% if related_products %}
+    <div style="margin-bottom: 4rem;">
+      <h3 style="font-size: 1.5rem; font-weight: 800; color: var(--primary-dark); margin-bottom: 1.5rem;">
+        More Fresh Harvests You Might Like
+      </h3>
+      <div class="products-grid">
+        {% for rel in related_products %}
+          <div class="product-card">
+            <div class="card-img-wrapper">
+              <img src="{{ rel.image }}" alt="{{ rel.title }}">
+              <span class="card-harvest-tag">{{ rel.harvest_date }}</span>
+            </div>
+            <div class="card-body">
+              <div class="card-category">{{ rel.category }}</div>
+              <h4 class="card-title">
+                <a href="{{ url_for('product_detail', product_id=rel.id) }}">{{ rel.title }}</a>
+              </h4>
+              <div class="card-farmer-info">
+                <span class="farmer-tag">{{ rel.farmer_name }}</span>
+              </div>
+              <div class="card-footer">
+                <div class="card-price">
+                  <span class="price-val">₹{{ rel.price }}</span>
+                  <span class="price-unit">per {{ rel.unit }}</span>
+                </div>
+                <a href="{{ url_for('product_detail', product_id=rel.id) }}" class="btn btn-secondary btn-sm">
+                  View
+                </a>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

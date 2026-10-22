@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block title %}Order Confirmed #{{ order.id }} | FarmDirect{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 760px; margin: 3.5rem auto 5rem;">
+  <div style="background: #ffffff; border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 3rem 2.5rem; box-shadow: var(--shadow-md); text-align: center;">
+    
+    <!-- Success Icon Animation -->
+    <div style="width: 84px; height: 84px; border-radius: 50%; background: #dcfce7; color: #15803d; display: flex; align-items: center; justify-content: center; font-size: 2.75rem; margin: 0 auto 1.5rem; box-shadow: 0 0 0 10px rgba(82, 183, 136, 0.15);">
+      <i class="fa-solid fa-check"></i>
+    </div>
+
+    <span class="role-badge farmer" style="font-size: 0.82rem; padding: 0.3rem 0.8rem;">
+      <i class="fa-solid fa-leaf"></i> Harvest Dispatched Directly to You
+    </span>
+
+    <h1 style="font-size: 2.2rem; font-weight: 800; color: var(--primary-dark); margin: 0.75rem 0 0.5rem;">
+      Order Placed Successfully!
+    </h1>
+    <p style="color: var(--text-muted); font-size: 1.05rem; margin-bottom: 2rem;">
+      Thank you, <strong>{{ order.customer_name }}</strong>! Your fresh crop request has been sent to our farmers.
+    </p>
+
+    <!-- Order Meta Card -->
+    <div style="background: var(--bg-page); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.5rem; text-align: left; margin-bottom: 2rem;">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+        <div>
+          <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Order ID</span>
+          <div style="font-size: 1.1rem; font-weight: 800; color: var(--primary-dark);">{{ order.id }}</div>
+        </div>
+        <div>
+          <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Date & Time</span>
+          <div style="font-size: 0.95rem; font-weight: 600; color: var(--text-main);">{{ order.created_at }}</div>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; border-top: 1px solid var(--border-color); padding-top: 1rem;">
+        <div>
+          <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Payment Mode</span>
+          <div style="font-size: 0.95rem; font-weight: 700; color: var(--text-main);">
+            {{ order.payment_method }}
+            <span class="status-pill {% if order.payment_status == 'Paid' %}approved{% else %}pending{% endif %}" style="margin-left: 0.4rem;">
+              {{ order.payment_status }}
+            </span>
+          </div>
+        </div>
+        <div>
+          <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Total Amount</span>
+          <div style="font-size: 1.25rem; font-weight: 800; color: var(--primary-dark);">₹{{ order.total_amount }}</div>
+        </div>
+      </div>
+
+      <div style="border-top: 1px solid var(--border-color); padding-top: 1rem; margin-top: 1rem;">
+        <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Delivery Address</span>
+        <div style="font-size: 0.92rem; color: var(--text-main); font-weight: 500; margin-top: 0.2rem;">
+          {{ order.delivery_address }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Items Ordered -->
+    <div style="text-align: left; margin-bottom: 2.25rem;">
+      <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 0.75rem;">
+        Items in This Harvest Batch
+      </h3>
+      <div style="border: 1px solid var(--border-color); border-radius: var(--radius-sm); overflow: hidden;">
+        {% for item in order['items'] %}
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 1rem; border-bottom: 1px solid var(--border-color); background: #ffffff;">
+            <div>
+              <span style="font-weight: 700; color: var(--text-main);">{{ item.title }}</span>
+              <div style="font-size: 0.78rem; color: var(--primary); font-weight: 600;">
+                <i class="fa-solid fa-user-check"></i> Farmer: {{ item.farmer_name }}
+              </div>
+            </div>
+            <div style="text-align: right;">
+              <div style="font-weight: 700; color: var(--primary-dark);">₹{{ item.total }}</div>
+              <div style="font-size: 0.75rem; color: var(--text-muted);">Qty: {{ item.quantity }} &times; {{ item.unit }}</div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+      <a href="{{ url_for('track_order', order_id=order.id) }}" class="btn btn-primary btn-lg">
+        <i class="fa-solid fa-truck-ramp-box"></i> Track Order Status Live
+      </a>
+      <a href="{{ url_for('marketplace') }}" class="btn btn-secondary btn-lg">
+        <i class="fa-solid fa-basket-shopping"></i> Continue Shopping
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}
